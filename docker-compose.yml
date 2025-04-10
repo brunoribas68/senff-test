@@ -1,0 +1,43 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: docker/app/Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP:-1000}'
+        container_name: laravel_app
+        ports:
+            - "8000:80"
+        volumes:
+            - .:/var/www/html
+        environment:
+            DB_HOST: db
+            DB_PORT: 3306
+            DB_DATABASE: laravel
+            DB_USERNAME: root
+            DB_PASSWORD: secret
+        depends_on:
+            - db
+        networks:
+            - senff
+
+    db:
+        image: mysql:8.0
+        container_name: laravel_db
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+        volumes:
+            - db_data:/var/lib/mysql
+        networks:
+            - senff
+
+
+volumes:
+    db_data:
+networks:
+    senff:
