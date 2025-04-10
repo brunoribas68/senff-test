@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\User;
 use Tests\TestCase;
 use App\Models\Request;
 use App\Models\Category;
@@ -14,6 +15,7 @@ class RequestTest extends TestCase
 
     public function test_it_creates_a_request()
     {
+        $user = User::factory()->create();
         // Arrange
         $category = Category::factory()->create();
         $status = Status::factory()->create(['name' => 'open']);
@@ -23,7 +25,7 @@ class RequestTest extends TestCase
             'title' => 'Teste de Solicitação',
             'description' => 'Descrição da solicitação',
             'category_id' => $category->id,
-            'user_name' => 'João Silva',
+            'user_id' => $user->id,
             'status_id' => $status->id,
         ]);
 
@@ -32,7 +34,7 @@ class RequestTest extends TestCase
             'title' => 'Teste de Solicitação',
             'description' => 'Descrição da solicitação',
             'category_id' => $category->id,
-            'user_name' => 'João Silva',
+            'user_id' => $user->id,
             'status_id' => $status->id,
         ]);
     }
