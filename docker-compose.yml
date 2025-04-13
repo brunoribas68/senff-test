@@ -8,14 +8,16 @@ services:
         container_name: laravel_app
         ports:
             - "8000:80"
+            - "5173:5173"
         volumes:
             - .:/var/www/html
         environment:
-            DB_HOST: db
-            DB_PORT: 3306
-            DB_DATABASE: laravel
-            DB_USERNAME: root
-            DB_PASSWORD: secret
+            - DB_CONNECTION=mysql
+            - DB_HOST=${DB_HOST}
+            - DB_PORT=3306
+            - DB_DATABASE=${DB_DATABASE}
+            - DB_USERNAME=${DB_USERNAME}
+            - DB_PASSWORD=${DB_PASSWORD}
         depends_on:
             - db
         networks:

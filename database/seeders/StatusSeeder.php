@@ -10,9 +10,9 @@ class StatusSeeder extends Seeder
     public function run(): void
     {
         DB::table('statuses')->insert([
-            ['name' => 'open', 'description' => 'Aberto para processamento'],
-            ['name' => 'in_progress', 'description' => 'Em progresso de resolução'],
-            ['name' => 'closed', 'description' => 'Concluído com sucesso'],
+            ['name' => 'aberto', 'description' => 'Aberto para processamento'],
+            ['name' => 'em andamento', 'description' => 'Em progresso de resolução'],
+            ['name' => 'fechado', 'description' => 'Concluído com sucesso'],
         ]);
     }
 }

@@ -2,12 +2,11 @@
 
 namespace Tests\Unit;
 
-use App\Models\User;
-use Tests\TestCase;
-use App\Models\Request;
 use App\Models\Category;
+use App\Models\Request;
 use App\Models\Status;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class RequestTest extends TestCase
 {
@@ -15,7 +14,6 @@ class RequestTest extends TestCase
 
     public function test_it_creates_a_request()
     {
-        $user = User::factory()->create();
         // Arrange
         $category = Category::factory()->create();
         $status = Status::factory()->create(['name' => 'open']);
@@ -25,7 +23,7 @@ class RequestTest extends TestCase
             'title' => 'Teste de Solicitação',
             'description' => 'Descrição da solicitação',
             'category_id' => $category->id,
-            'user_id' => $user->id,
+            'requester_name' => 'João da Silva',
             'status_id' => $status->id,
         ]);
 
@@ -34,7 +32,7 @@ class RequestTest extends TestCase
             'title' => 'Teste de Solicitação',
             'description' => 'Descrição da solicitação',
             'category_id' => $category->id,
-            'user_id' => $user->id,
+            'requester_name' => 'João da Silva',
             'status_id' => $status->id,
         ]);
     }
@@ -49,6 +47,7 @@ class RequestTest extends TestCase
         $request = Request::factory()->create([
             'category_id' => $category->id,
             'status_id' => $statusOpen->id,
+            'requester_name' => 'Fulano',
         ]);
 
         // Act

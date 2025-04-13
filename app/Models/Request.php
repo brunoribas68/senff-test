@@ -13,8 +13,8 @@ class Request extends Model
         'title',
         'description',
         'category_id',
-        'user_name',
         'status_id',
+        'requester_name',
     ];
 
     public function category()
