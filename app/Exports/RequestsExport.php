@@ -17,7 +17,7 @@ class RequestsExport implements FromView
     public function view(): View
     {
         return view('exports.requests', [
-            'requests' => $this->requests
+            'requests' => $this->requests,
         ]);
     }
 }

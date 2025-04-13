@@ -2,26 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\RequestsExport;
+use App\Http\Requests\StoreRequestRequest;
 use App\Models\Category;
 use App\Models\Request as UserRequest;
 use App\Models\Status;
 use Illuminate\Http\Request;
-use App\Exports\RequestsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class RequestController extends Controller
 {
     public function index(Request $request)
     {
-        $query = UserRequest::with(['category', 'status']);
-
-        if ($request->filled('category')) {
-            $query->where('category_id', $request->category);
-        }
-
-        if ($request->filled('status')) {
-            $query->where('status_id', $request->status);
-        }
+        $query = $this->buildFilteredQuery($request);
 
         $requests = $query->latest()->get();
         $categories = Category::all();
@@ -41,46 +34,40 @@ class RequestController extends Controller
         return view('request.formRequest', compact('categories', 'statuses'));
     }
 
-    public function store(Request $request)
+    public function store(StoreRequestRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'category_id' => 'required|exists:categories,id',
-            'requester_name' => 'required|string|max:255',
-        ]);
 
         UserRequest::create([
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'category_id' => $validated['category_id'],
-            'requester_name' => $validated['requester_name'],
+            'title' => $request['title'],
+            'description' => $request['description'],
+            'category_id' => $request['category_id'],
+            'requester_name' => $request['requester_name'],
             'status_id' => Status::where('name', 'aberto')->first()->id,
         ]);
 
         return redirect()->route('requests.index')->with('success', 'Solicitação criada com sucesso!');
     }
 
-    public function show(UserRequest $userRequest) {
-        $statuses = Status::all();
-        return view('request.detailRequest', ['request' => $userRequest, 'statuses' => $statuses]);
-    }
-
-    public function edit(UserRequest $request)
+    public function show(UserRequest $userRequest)
     {
         $statuses = Status::all();
 
-        return view('request.detailRequest', compact('request', 'statuses'));
+        return view('request.detailRequest', ['request' => $userRequest, 'statuses' => $statuses]);
+    }
+
+    public function edit(UserRequest $userRequest)
+    {
+        $statuses = Status::all();
+
+        return view('request.detailRequest', ['request' => $userRequest, 'statuses' => $statuses]);
     }
 
     public function updateStatus($id, Request $request)
     {
-        $validated = $request->validate([
-            'status_id' => 'required|exists:statuses,id',
-        ]);
-        $userRequest = UserRequest::find($id);
+        $userRequest = UserRequest::findOrFail($id); // Deve retornar apenas um item
+
         $userRequest->update([
-            'status_id' => $validated['status_id'],
+            'status_id' => $request['status_id'],
         ]);
 
         return redirect()->route('requests.index')->with('success', 'Status atualizado com sucesso!');
@@ -95,6 +82,15 @@ class RequestController extends Controller
 
     public function export(Request $request)
     {
+        $query = $this->buildFilteredQuery($request);
+
+        $requests = $query->get();
+
+        return Excel::download(new RequestsExport($requests), 'solicitacoes.xlsx');
+    }
+
+    private function buildFilteredQuery(Request $request)
+    {
         $query = UserRequest::with(['category', 'status']);
 
         if ($request->filled('status')) {
@@ -105,8 +101,6 @@ class RequestController extends Controller
             $query->where('category_id', $request->input('category'));
         }
 
-        $requests = $query->get();
-
-        return Excel::download(new RequestsExport($requests), 'solicitacoes.xlsx');
+        return $query;
     }
 }
