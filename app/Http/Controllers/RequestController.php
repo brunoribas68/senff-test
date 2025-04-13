@@ -64,7 +64,7 @@ class RequestController extends Controller
 
     public function updateStatus($id, Request $request)
     {
-        $userRequest = UserRequest::findOrFail($id); // Deve retornar apenas um item
+        $userRequest = UserRequest::findOrFail($id);
 
         $userRequest->update([
             'status_id' => $request['status_id'],
@@ -73,10 +73,9 @@ class RequestController extends Controller
         return redirect()->route('requests.index')->with('success', 'Status atualizado com sucesso!');
     }
 
-    public function destroy(UserRequest $request)
+    public function destroy($id_request)
     {
-        $request->delete();
-
+        UserRequest::forceDestroy($id_request);
         return redirect()->route('requests.index')->with('success', 'Solicitação removida com sucesso!');
     }
 
