@@ -4,9 +4,12 @@ namespace Tests\Feature;
 use App\Models\Category;
 use App\Models\Request as UserRequest;
 use App\Models\Status;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
+
+
 
 class RequestTest extends TestCase
 {
@@ -15,7 +18,11 @@ class RequestTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->withoutMiddleware(VerifyCsrfToken::class);
         $this->seed();
+        $this->mock(\Illuminate\Foundation\Vite::class, function ($mock) {
+            $mock->shouldReceive('__invoke')->andReturn('');
+        });
     }
 
     public function test_update_status_route_updates_request_status()
@@ -52,11 +59,8 @@ class RequestTest extends TestCase
 
     public function test_store_creates_request()
     {
-
-        // Create necessary data
         $category = Category::factory()->create();
 
-        // Call the store route
         $response = $this->post(route('requests.store'), [
             'title' => 'Nova Solicitação',
             'description' => 'Descrição detalhada',
@@ -64,7 +68,6 @@ class RequestTest extends TestCase
             'requester_name' => 'João da Silva',
         ]);
 
-        // Assertions
         $response->assertRedirect(route('requests.index'))
             ->assertSessionHas('success');
 

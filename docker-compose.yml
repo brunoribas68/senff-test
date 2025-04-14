@@ -13,7 +13,7 @@ services:
             - .:/var/www/html
         environment:
             - DB_CONNECTION=mysql
-            - DB_HOST=${DB_HOST}
+            - DB_HOST=db
             - DB_PORT=3306
             - DB_DATABASE=${DB_DATABASE}
             - DB_USERNAME=${DB_USERNAME}
@@ -25,6 +25,9 @@ services:
 
     db:
         image: mysql:8.0
+        build:
+            context: .
+            dockerfile: docker/db/Dockerfile
         container_name: laravel_db
         ports:
             - "3306:3306"
@@ -33,13 +36,16 @@ services:
             MYSQL_DATABASE: '${DB_DATABASE}'
             MYSQL_USER: '${DB_USERNAME}'
             MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_INITDB_SKIP_TZINFO: 1
         volumes:
             - db_data:/var/lib/mysql
+            - ./docker/db/conf.d:/etc/mysql/conf.d
         networks:
             - senff
 
-
 volumes:
     db_data:
+
 networks:
     senff:
+        driver: bridge

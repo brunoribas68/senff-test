@@ -107,13 +107,10 @@ class RequestTest extends TestCase
         ]);
 
         $controller = new RequestController;
-        $response = $controller->destroy($request);
+        $response = $controller->destroy($request->id); // Passar o ID em vez do objeto
 
         $this->assertEquals(route('requests.index'), $response->getTargetUrl());
         $this->assertEquals(302, $response->status());
-
-        $this->assertDatabaseMissing('requests', [
-            'id' => $request->id,
-        ]);
+        $this->assertDatabaseMissing('requests', ['id' => $request->id]);
     }
 }
