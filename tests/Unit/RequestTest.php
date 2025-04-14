@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use App\Http\Controllers\RequestController;
-use App\Http\Requests\StoreRequestRequest;
+use App\Http\Requests\StoreRequest;
 use App\Models\Category;
 use App\Models\Request as UserRequest;
 use App\Models\Status;
@@ -51,7 +51,7 @@ class RequestTest extends TestCase
             'requester_name' => 'João da Silva',
         ];
 
-        $request = new StoreRequestRequest($requestData);
+        $request = new StoreRequest($requestData);
 
         $controller = new RequestController;
         $response = $controller->store($request);
@@ -95,6 +95,7 @@ class RequestTest extends TestCase
             'status_id' => $statusClosed->id,
         ]);
     }
+
     public function test_destroy_deletes_request()
     {
         $category = Category::factory()->create();

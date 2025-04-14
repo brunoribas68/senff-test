@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Feature;
 
 use App\Models\Category;
@@ -8,8 +9,6 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
-
-
 
 class RequestTest extends TestCase
 {
@@ -95,25 +94,24 @@ class RequestTest extends TestCase
         $response = $this->get(route('requests.index', ['category' => $category1->id]));
         $response->assertOk();
         $response->assertViewHas('requests', function ($requests) use ($category1) {
-            return $requests->every(fn($request) => $request->category_id === $category1->id);
+            return $requests->every(fn ($request) => $request->category_id === $category1->id);
         });
 
         // Test status filter
         $response = $this->get(route('requests.index', ['status' => $status1->id]));
         $response->assertOk();
         $response->assertViewHas('requests', function ($requests) use ($status1) {
-            return $requests->every(fn($request) => $request->status_id === $status1->id);
+            return $requests->every(fn ($request) => $request->status_id === $status1->id);
         });
 
         // Test combined filters
         $response = $this->get(route('requests.index', [
             'category' => $category1->id,
-            'status' => $status1->id
+            'status' => $status1->id,
         ]));
         $response->assertOk();
         $response->assertViewHas('requests', function ($requests) use ($category1, $status1) {
-            return $requests->every(fn($request) =>
-                $request->category_id === $category1->id &&
+            return $requests->every(fn ($request) => $request->category_id === $category1->id &&
                 $request->status_id === $status1->id
             );
         });

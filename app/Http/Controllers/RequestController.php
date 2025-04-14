@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\RequestsExport;
-use App\Http\Requests\StoreRequestRequest;
+use App\Http\Requests\StoreRequest;
 use App\Models\Category;
 use App\Models\Request as UserRequest;
 use App\Models\Status;
@@ -34,7 +34,7 @@ class RequestController extends Controller
         return view('request.formRequest', compact('categories', 'statuses'));
     }
 
-    public function store(StoreRequestRequest $request)
+    public function store(StoreRequest $request)
     {
 
         UserRequest::create([
@@ -76,6 +76,7 @@ class RequestController extends Controller
     public function destroy($id_request)
     {
         UserRequest::forceDestroy($id_request);
+
         return redirect()->route('requests.index')->with('success', 'Solicitação removida com sucesso!');
     }
 
