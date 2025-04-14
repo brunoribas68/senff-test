@@ -69,6 +69,8 @@ Para executar os testes, utilize o comando:
 
 ```bash
 docker exec -it laravel_app ./vendor/bin/phpunit
+ou
+docker exec -it laravel_app php artisan test
 ```
 
 ## Estrutura do Banco de Dados

@@ -3,6 +3,7 @@
 @section('title', 'Lista de Solicitações')
 
 @section('content')
+    <input type="hidden" value="{{route('requests.export')}}" id="export_route">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">
