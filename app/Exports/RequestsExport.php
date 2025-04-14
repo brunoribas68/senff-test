@@ -30,7 +30,7 @@ class RequestsExport implements FromCollection, WithHeadings, WithMapping, WithS
             'Categoria',
             'Status',
             'Solicitante',
-            'Data de Criação'
+            'Data de Criação',
         ];
     }
 
@@ -42,7 +42,7 @@ class RequestsExport implements FromCollection, WithHeadings, WithMapping, WithS
             $request->category->name ?? '-',
             $request->status->name ?? 'Sem Status',
             $request->requester_name,
-            $request->created_at->format('d/m/Y H:i')
+            $request->created_at->format('d/m/Y H:i'),
         ];
     }
 

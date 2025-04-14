@@ -13,9 +13,13 @@ if (! function_exists('getStatusColor')) {
     }
 }
 
-if (!function_exists('excelDate')) {
-    function excelDate($date) {
-        if (!$date) return '';
+if (! function_exists('excelDate')) {
+    function excelDate($date)
+    {
+        if (! $date) {
+            return '';
+        }
+
         return \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($date);
     }
 }
