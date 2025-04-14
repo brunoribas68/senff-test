@@ -7,7 +7,6 @@ use App\Http\Requests\StoreRequest;
 use App\Models\Category;
 use App\Models\Request as UserRequest;
 use App\Models\Status;
-use http\Client\Curl\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -86,7 +85,7 @@ class RequestController extends Controller
 
     public function destroy($id_request): RedirectResponse
     {
-        if(!is_object($id_request)){
+        if (! is_object($id_request)) {
             $id_request = UserRequest::find($id_request);
         }
 

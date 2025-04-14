@@ -15,12 +15,13 @@ class RequestFactory extends Factory
     {
         $statuses = Status::all();
         $categories = Category::all();
+
         return [
             'title' => $this->faker->sentence(),
             'description' => $this->faker->paragraph(),
-            'category_id' => $categories[rand(1,2)]->id,
+            'category_id' => $categories[rand(1, 2)]->id,
             'requester_name' => $this->faker->name(),
-            'status_id' => $statuses[rand(0,2)]->id,
+            'status_id' => $statuses[rand(0, 2)]->id,
         ];
     }
 }
