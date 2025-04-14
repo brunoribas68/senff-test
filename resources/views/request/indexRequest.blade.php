@@ -52,11 +52,7 @@
             </div>
         </div>
 
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body p-0" id="requestsTable">
-                @include('request.partials.table', ['requests' => $requests])
-            </div>
-        </div>
+        @include('request.partials.table', ['requests' => $requests])
     </div>
 @endsection
 

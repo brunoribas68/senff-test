@@ -128,11 +128,10 @@ class RequestTest extends TestCase
             'status_id' => Status::where('name', 'aberto')->first()->id,
         ]);
 
-        $response = $this->delete(route('requests.destroy', ['id_request' => $request->id]));
+        $response = $this->post(route('requests.destroy', ['id_request' => $request->id]));
 
         $response->assertRedirect(route('requests.index'))
             ->assertSessionHas('success');
-
         $this->assertDatabaseMissing('requests', ['id' => $request->id]);
     }
 }

@@ -1,30 +1,66 @@
-
 document.addEventListener('DOMContentLoaded', function () {
-    function updateTable() {
-        const category = document.getElementById('category').value;
-        const status = document.getElementById('status').value;
+    function updateTable(url = null) {
+        // Pegar valores dos filtros
+        const category = document.getElementById('category')?.value || '';
+        const status = document.getElementById('status')?.value || '';
 
-        // Atualiza o link do botão de exportação
-        const exportUrl = `/requests/export?category=${category}&status=${status}`;
-        document.getElementById('btnExport').href = exportUrl;
+        // Construir a URL para a requisição
+        const baseUrl = url || '/';
+        const queryParams = new URLSearchParams({ category, status });
+        const targetUrl = baseUrl.includes('?') ? `${baseUrl}&${queryParams}` : `${baseUrl}?${queryParams}`;
 
         // Requisição AJAX para carregar os dados filtrados
-        fetch(`/?category=${category}&status=${status}`, {
+        fetch(targetUrl, {
             headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
+                'X-Requested-With': 'XMLHttpRequest',
+            },
         })
             .then(response => response.text())
             .then(html => {
-                // Atualiza a tabela com os novos dados filtrados
-                document.getElementById('requestsTable').innerHTML = html;
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // Atualizar a tabela
+                const newTable = doc.querySelector('#requestsTableWrapper');
+                const requestsTableWrapper = document.getElementById('requestsTableWrapper');
+                if (requestsTableWrapper && newTable) {
+                    requestsTableWrapper.innerHTML = newTable.innerHTML;
+                }
+
+                // Atualizar a paginação
+                const newPagination = doc.querySelector('#paginationWrapper');
+                const paginationWrapper = document.getElementById('paginationWrapper');
+                if (paginationWrapper && newPagination) {
+                    paginationWrapper.innerHTML = newPagination.innerHTML;
+                }
+
+                // Reaplicar eventos de paginação após atualizar a tabela
+                attachPaginationEvents();
+            })
+            .catch(error => {
+                console.error('Erro ao carregar os dados filtrados:', error);
             });
     }
 
-    // Adiciona evento de escuta para os selects de filtro
-    document.getElementById('category').addEventListener('change', updateTable);
-    document.getElementById('status').addEventListener('change', updateTable);
+    function attachPaginationEvents() {
+        const paginationLinks = document.querySelectorAll('#paginationWrapper .pagination a');
+        paginationLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const url = this.href;
+                updateTable(url);
+            });
+        });
+    }
 
-    // Atualiza a tabela e a URL de exportação ao carregar a página com os filtros
-    updateTable();
+    // Inicializar os eventos nos filtros
+    const categorySelect = document.getElementById('category');
+    const statusSelect = document.getElementById('status');
+    if (categorySelect && statusSelect) {
+        categorySelect.addEventListener('change', () => updateTable());
+        statusSelect.addEventListener('change', () => updateTable());
+    }
+
+    // Reaplicar eventos de paginação na primeira carga
+    attachPaginationEvents();
 });

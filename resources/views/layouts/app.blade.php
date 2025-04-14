@@ -24,7 +24,7 @@
 <!-- Navbar simples opcional -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm mb-4">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="#">
+        <a class="navbar-brand fw-bold" href="{{route('requests.index')}}">
             <i class="bi bi-clipboard-check me-2"></i> Sistema de Solicitação
         </a>
     </div>

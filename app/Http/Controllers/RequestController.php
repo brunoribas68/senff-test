@@ -7,7 +7,10 @@ use App\Http\Requests\StoreRequest;
 use App\Models\Category;
 use App\Models\Request as UserRequest;
 use App\Models\Status;
+use http\Client\Curl\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class RequestController extends Controller
@@ -16,7 +19,7 @@ class RequestController extends Controller
     {
         $query = $this->buildFilteredQuery($request);
 
-        $requests = $query->latest()->get();
+        $requests = $query->latest()->paginate(5);
         $categories = Category::all();
         $statuses = Status::all();
         if ($request->ajax()) {
@@ -37,13 +40,15 @@ class RequestController extends Controller
     public function store(StoreRequest $request)
     {
 
-        UserRequest::create([
+        $userRequest = UserRequest::create([
             'title' => $request['title'],
             'description' => $request['description'],
             'category_id' => $request['category_id'],
             'requester_name' => $request['requester_name'],
             'status_id' => Status::where('name', 'aberto')->first()->id,
         ]);
+
+        Log::info('Solicitação criada', ['id' => $userRequest->id, 'title' => $userRequest->title]);
 
         return redirect()->route('requests.index')->with('success', 'Solicitação criada com sucesso!');
     }
@@ -65,17 +70,29 @@ class RequestController extends Controller
     public function updateStatus($id, Request $request)
     {
         $userRequest = UserRequest::findOrFail($id);
-
+        $oldStatus = $userRequest->status_id;
         $userRequest->update([
             'status_id' => $request['status_id'],
+        ]);
+
+        Log::info('Status da solicitação atualizado', [
+            'id' => $userRequest->id,
+            'old_status' => $oldStatus,
+            'new_status' => $request['status_id'],
         ]);
 
         return redirect()->route('requests.index')->with('success', 'Status atualizado com sucesso!');
     }
 
-    public function destroy($id_request)
+    public function destroy($id_request): RedirectResponse
     {
-        UserRequest::forceDestroy($id_request);
+        if(!is_object($id_request)){
+            $id_request = UserRequest::find($id_request);
+        }
+
+        $id_request->forceDelete();
+
+        Log::warning('Solicitação excluída', ['id' => $id_request->id, 'title' => $id_request->title]);
 
         return redirect()->route('requests.index')->with('success', 'Solicitação removida com sucesso!');
     }
