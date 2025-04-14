@@ -34,7 +34,6 @@
                 <h2 class="h5 mb-3">Atualizar Status</h2>
                 <form action="{{ route('requests.update-status', $request->id) }}" method="POST" class="row g-3">
                     @csrf
-                        @method('PUT')
                     <div class="col-md-6">
                         <label for="status_id" class="form-label">Novo Status</label>
                         <select id="status_id" name="status_id" class="form-select" required>

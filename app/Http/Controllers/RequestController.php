@@ -7,7 +7,6 @@ use App\Http\Requests\StoreRequest;
 use App\Models\Category;
 use App\Models\Request as UserRequest;
 use App\Models\Status;
-use http\Client\Curl\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -58,6 +57,7 @@ class RequestController extends Controller
         $userRequest = UserRequest::findOrFail($id);
         $statuses = Status::all();
         dd($userRequest);
+
         return view('request.detailRequest', ['request' => $userRequest, 'statuses' => $statuses]);
     }
 

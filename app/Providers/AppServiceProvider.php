@@ -2,9 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\Request;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,7 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Route::model('id_request', Request::class);
         Paginator::useBootstrapFive();
         Paginator::useBootstrapFour();
     }

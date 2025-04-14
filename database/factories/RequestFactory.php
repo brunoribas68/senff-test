@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Factories;
 
 use App\Models\Category;
@@ -27,7 +28,6 @@ class RequestFactory extends Factory
     /**
      * Define um estado para uma categoria específica.
      *
-     * @param Category $category
      * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
     public function withCategory(Category $category)
@@ -40,7 +40,6 @@ class RequestFactory extends Factory
     /**
      * Define um estado para um status específico.
      *
-     * @param Status $status
      * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
     public function withStatus(Status $status)

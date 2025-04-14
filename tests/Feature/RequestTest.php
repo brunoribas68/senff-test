@@ -125,6 +125,7 @@ class RequestTest extends TestCase
             ->assertSessionHas('success');
         $this->assertDatabaseMissing('requests', ['id' => $request->id]);
     }
+
     public function test_store_fails_when_title_is_missing()
     {
         $response = $this->post(route('requests.store'), [
@@ -135,5 +136,4 @@ class RequestTest extends TestCase
 
         $response->assertSessionHasErrors(['title']);
     }
-
 }
