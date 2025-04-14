@@ -13,6 +13,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # Adicione isso para permitir que a ação faça push
+          persist-credentials: true
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -29,3 +32,8 @@ jobs:
 
       - name: Commit linted files
         uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          # Adicione seu token de acesso pessoal
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          commit_message: Apply Pint changes
+          commit_author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"

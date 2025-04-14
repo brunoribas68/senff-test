@@ -85,7 +85,7 @@ class RequestTest extends TestCase
         ]);
 
         $controller = new RequestController;
-        $response = $controller->updateStatus($request->id, $httpRequest);
+        $response = $controller->updateStatus($httpRequest,$request->id);
 
         $this->assertEquals(route('requests.index'), $response->getTargetUrl());
         $this->assertEquals(302, $response->status());

@@ -26,33 +26,24 @@ class RequestTest extends TestCase
 
     public function test_update_status_route_updates_request_status()
     {
-
         // Create necessary data
-        $category = Category::factory()->create();
-        $statusOld = Status::factory()->create(['name' => 'Pendente']);
-        $statusNew = Status::factory()->create(['name' => 'Concluído']);
-        $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
+        $request = UserRequest::factory()
+            ->withCategory(Category::where('name', 'TI')->first())
+            ->withStatus(Status::where('name', 'aberto')->first())
+            ->create();
 
-        // Create a request
-        $request = UserRequest::factory()->create([
-            'title' => 'Nova Solicitacao',
-            'description' => 'Qualquer texto',
-            'category_id' => $category->id,
-            'status_id' => $statusOld->id,
-            'requester_name' => 'Maria',
-        ]);
-        // Call the update status route
-        $response = $this->put(route('requests.update-status', ['id_request' => $request->id]), [
-            'status_id' => $statusNew->id,
+        $newStatus = Status::where('name', 'em andamento')->first();
+
+        $response = $this->post(route('requests.update-status', ['id_request' => $request->id]), [
+            'status_id' => $newStatus->id,
         ]);
 
-        // Assertions
         $response->assertRedirect(route('requests.index'))
             ->assertSessionHas('success');
 
         $this->assertDatabaseHas('requests', [
             'id' => $request->id,
-            'status_id' => $statusNew->id,
+            'status_id' => $newStatus->id,
         ]);
     }
 
@@ -134,4 +125,15 @@ class RequestTest extends TestCase
             ->assertSessionHas('success');
         $this->assertDatabaseMissing('requests', ['id' => $request->id]);
     }
+    public function test_store_fails_when_title_is_missing()
+    {
+        $response = $this->post(route('requests.store'), [
+            'description' => 'Descrição detalhada',
+            'category_id' => Category::factory()->create()->id,
+            'requester_name' => 'João da Silva',
+        ]);
+
+        $response->assertSessionHasErrors(['title']);
+    }
+
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace Database\Factories;
 
 use App\Models\Category;
@@ -19,9 +18,35 @@ class RequestFactory extends Factory
         return [
             'title' => $this->faker->sentence(),
             'description' => $this->faker->paragraph(),
-            'category_id' => $categories[rand(1, 2)]->id,
+            'category_id' => $categories->isNotEmpty() ? $categories->random()->id : Category::factory(),
             'requester_name' => $this->faker->name(),
-            'status_id' => $statuses[rand(0, 2)]->id,
+            'status_id' => $statuses->isNotEmpty() ? $statuses->random()->id : Status::factory(),
         ];
+    }
+
+    /**
+     * Define um estado para uma categoria específica.
+     *
+     * @param Category $category
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function withCategory(Category $category)
+    {
+        return $this->state(fn () => [
+            'category_id' => $category->id,
+        ]);
+    }
+
+    /**
+     * Define um estado para um status específico.
+     *
+     * @param Status $status
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function withStatus(Status $status)
+    {
+        return $this->state(fn () => [
+            'status_id' => $status->id,
+        ]);
     }
 }

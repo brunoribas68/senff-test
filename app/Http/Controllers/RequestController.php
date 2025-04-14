@@ -7,6 +7,7 @@ use App\Http\Requests\StoreRequest;
 use App\Models\Category;
 use App\Models\Request as UserRequest;
 use App\Models\Status;
+use http\Client\Curl\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -52,32 +53,37 @@ class RequestController extends Controller
         return redirect()->route('requests.index')->with('success', 'Solicitação criada com sucesso!');
     }
 
-    public function show(UserRequest $userRequest)
-    {
-        $statuses = Status::all();
-
-        return view('request.detailRequest', ['request' => $userRequest, 'statuses' => $statuses]);
-    }
-
-    public function edit(UserRequest $userRequest)
-    {
-        $statuses = Status::all();
-
-        return view('request.detailRequest', ['request' => $userRequest, 'statuses' => $statuses]);
-    }
-
-    public function updateStatus($id, Request $request)
+    public function show($id)
     {
         $userRequest = UserRequest::findOrFail($id);
+        $statuses = Status::all();
+        dd($userRequest);
+        return view('request.detailRequest', ['request' => $userRequest, 'statuses' => $statuses]);
+    }
+
+    public function edit($id)
+    {
+        $userRequest = UserRequest::findOrFail($id);
+
+        $statuses = Status::all();
+
+        return view('request.detailRequest', ['request' => $userRequest, 'statuses' => $statuses]);
+    }
+
+    public function updateStatus(Request $httpRequest, $id)
+    {
+        $userRequest = UserRequest::findOrFail($id);
+
         $oldStatus = $userRequest->status_id;
+
         $userRequest->update([
-            'status_id' => $request['status_id'],
+            'status_id' => $httpRequest->input('status_id'),
         ]);
 
         Log::info('Status da solicitação atualizado', [
             'id' => $userRequest->id,
             'old_status' => $oldStatus,
-            'new_status' => $request['status_id'],
+            'new_status' => $httpRequest->input('status_id'),
         ]);
 
         return redirect()->route('requests.index')->with('success', 'Status atualizado com sucesso!');
